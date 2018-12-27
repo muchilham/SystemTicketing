@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="TicketingDB" Class="TicketingDBDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=DESKTOP-D9NU0BV\SQLEXPRESS;Initial Catalog=TicketingDB;Integrated Security=True" SettingsObjectName="SystemTicketing.Properties.Settings" SettingsPropertyName="TicketingDBConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.tbl_Admin" Member="tbl_Admins">
+    <Type Name="tbl_Admin">
+      <Column Name="username" Type="System.String" DbType="VarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="password" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="email" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="phonenumber" Type="System.String" DbType="VarChar(15) NOT NULL" CanBeNull="false" />
+      <Association Name="tbl_Admin_tbl_HistoryLogin" Member="tbl_HistoryLogins" ThisKey="username" OtherKey="username" Type="tbl_HistoryLogin" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_Booking" Member="tbl_Bookings">
+    <Type Name="tbl_Booking">
+      <Column Name="id_booking" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="id_customer" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="id_schedule" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="booking_date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="status" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="tbl_Booking_tbl_Payment" Member="tbl_Payments" ThisKey="id_booking" OtherKey="id_booking" Type="tbl_Payment" />
+      <Association Name="tbl_Customer_tbl_Booking" Member="tbl_Customer" ThisKey="id_customer" OtherKey="id_customer" Type="tbl_Customer" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="tbl_Schedule_tbl_Booking" Member="tbl_Schedule" ThisKey="id_schedule" OtherKey="id_schedule" Type="tbl_Schedule" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_Customer" Member="tbl_Customers">
+    <Type Name="tbl_Customer">
+      <Column Name="id_customer" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="firstname" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="lastname" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="address" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="town" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="country" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="postcode" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="email" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Association Name="tbl_Customer_tbl_Booking" Member="tbl_Bookings" ThisKey="id_customer" OtherKey="id_customer" Type="tbl_Booking" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_HistoryLogin" Member="tbl_HistoryLogins">
+    <Type Name="tbl_HistoryLogin">
+      <Column Name="id_history" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="username" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="login_date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="tbl_Admin_tbl_HistoryLogin" Member="tbl_Admin" ThisKey="username" OtherKey="username" Type="tbl_Admin" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_Payment" Member="tbl_Payments">
+    <Type Name="tbl_Payment">
+      <Column Name="id_payment" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="id_booking" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="total_payment" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="paid" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Association Name="tbl_Booking_tbl_Payment" Member="tbl_Booking" ThisKey="id_booking" OtherKey="id_booking" Type="tbl_Booking" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_Route" Member="tbl_Routes">
+    <Type Name="tbl_Route">
+      <Column Name="id_route" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="id_departure" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="id_arrival" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="tbl_Route_tbl_Schedule" Member="tbl_Schedules" ThisKey="id_route" OtherKey="id_route" Type="tbl_Schedule" />
+      <Association Name="tbl_Station_tbl_Route" Member="tbl_Station" ThisKey="id_departure" OtherKey="id_station" Type="tbl_Station" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="tbl_Station_tbl_Route1" Member="tbl_Station1" ThisKey="id_arrival" OtherKey="id_station" Type="tbl_Station" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_Schedule" Member="tbl_Schedules">
+    <Type Name="tbl_Schedule">
+      <Column Name="id_schedule" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="id_train" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="id_route" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="id_ticket" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="harga" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="departure_date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="tbl_Schedule_tbl_Booking" Member="tbl_Bookings" ThisKey="id_schedule" OtherKey="id_schedule" Type="tbl_Booking" />
+      <Association Name="tbl_Route_tbl_Schedule" Member="tbl_Route" ThisKey="id_route" OtherKey="id_route" Type="tbl_Route" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="tbl_Ticket_tbl_Schedule" Member="tbl_Ticket" ThisKey="id_ticket" OtherKey="id_ticket" Type="tbl_Ticket" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="tbl_Train_tbl_Schedule" Member="tbl_Train" ThisKey="id_train" OtherKey="id_train" Type="tbl_Train" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_Station" Member="tbl_Stations">
+    <Type Name="tbl_Station">
+      <Column Name="id_station" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="station_name" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="station_location" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Association Name="tbl_Station_tbl_Route" Member="tbl_Routes" ThisKey="id_station" OtherKey="id_departure" Type="tbl_Route" />
+      <Association Name="tbl_Station_tbl_Route1" Member="tbl_Routes1" ThisKey="id_station" OtherKey="id_arrival" Type="tbl_Route" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_Ticket" Member="tbl_Tickets">
+    <Type Name="tbl_Ticket">
+      <Column Name="id_ticket" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="class_ticket" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Association Name="tbl_Ticket_tbl_Schedule" Member="tbl_Schedules" ThisKey="id_ticket" OtherKey="id_ticket" Type="tbl_Schedule" />
+      <Association Name="tbl_Ticket_tbl_TicketType" Member="tbl_TicketTypes" ThisKey="id_ticket" OtherKey="id_ticket" Type="tbl_TicketType" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_TicketType" Member="tbl_TicketTypes">
+    <Type Name="tbl_TicketType">
+      <Column Name="id_type" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="id_ticket" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="harga_ticket" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Association Name="tbl_Ticket_tbl_TicketType" Member="tbl_Ticket" ThisKey="id_ticket" OtherKey="id_ticket" Type="tbl_Ticket" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_Train" Member="tbl_Trains">
+    <Type Name="tbl_Train">
+      <Column Name="id_train" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="train_name" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="train_seat" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="tbl_Train_tbl_Schedule" Member="tbl_Schedules" ThisKey="id_train" OtherKey="id_train" Type="tbl_Schedule" />
+    </Type>
+  </Table>
+</Database>
